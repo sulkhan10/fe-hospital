@@ -38,14 +38,14 @@ export default function usePatients() {
       await router.push({ name: "PatientList" });
     } catch (error) {
       if (error.response.status === 409) {
-          let errorsTemp = error.response.data.errors;
-          let newErrors = {};
-          errorsTemp.forEach((error, index) => {
-            newErrors[`${error.field}`] = error.message;
-          });
-          
-          console.log(newErrors);
-          errors.value = newErrors;
+        let errorsTemp = error.response.data.errors;
+        let newErrors = {};
+        errorsTemp.forEach((error, index) => {
+          newErrors[`${error.field}`] = error.message;
+        });
+
+        console.log(newErrors);
+        errors.value = newErrors;
       }
       console.log(errors);
     }
@@ -53,13 +53,26 @@ export default function usePatients() {
 
   const updatePatient = async (id) => {
     try {
-      await axios.put(`users/${id}`, patient.value);
+      await axios.put(`users/${id}`, patient.value, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          'Accept': 'application/json'
+          },
+          }
+          );
       await router.push({ name: "PatientList" });
     } catch (error) {
-      if (error.response.status === 422) {
-        errors.value = error.response.data.errors;
-        // errors.value = error.response.data.status;
-      }
+      // if (error.response.status === 409) {
+      // errors.value = error.response.data.errors;
+      // let errorsTemp = error.response.data.errors;
+      // let newErrors = {};
+      // errorsTemp.forEach((error, index) => {
+      //   newErrors[`${error.field}`] = error.message;
+      // });
+
+      // console.log(newErrors);
+      // errors.value = newErrors;
+      // }
       console.log(error);
     }
   };
@@ -68,7 +81,11 @@ export default function usePatients() {
     if (!window.confirm("Are you sure you want to delete this patient?")) {
       return;
     }
-    await axios.delete(`users/${id}`);
+    await axios({
+      method: "DELETE",
+      url: `users/${id}`,
+    });
+
     await getPatients();
   };
 
