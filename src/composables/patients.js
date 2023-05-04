@@ -1,7 +1,7 @@
 import { ref } from "vue";
 import axios from "axios";
 import { useRouter } from "vue-router";
-axios.defaults.baseURL = "http://localhost:8000/api/v1";
+axios.defaults.baseURL = "http://localhost:8000/";
 export default function usePatients() {
   const patients = ref([]);
   const patient = ref([]);
@@ -9,8 +9,9 @@ export default function usePatients() {
   const router = useRouter();
   const getPatients = async () => {
     try {
-      const response = await axios.get("patients");
-      patients.value = response.data.data;
+      const response = await axios.get("users");
+      // console.log(response.data);
+      patients.value = response.data.result;
     } catch (error) {
       console.log(error);
     }
@@ -18,8 +19,8 @@ export default function usePatients() {
 
   const getPatient = async (id) => {
     try {
-      const response = await axios.get(`patients/${id}`);
-      patient.value = response.data.data;
+      const response = await axios.get(`users/${id}`);
+      patient.value = response.data.result;
     } catch (error) {
       console.log(error);
     }
@@ -27,39 +28,49 @@ export default function usePatients() {
 
   const storePatient = async (data) => {
     try {
-      await axios.post("patients", data);
+      await axios.post("users", data, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       // const response = await axios.post('patients', data)
       // patients.value.push(response.data.data)
       await router.push({ name: "PatientList" });
     } catch (error) {
+      if (error.response.status === 409) {
+          let errorsTemp = error.response.data.errors;
+          let newErrors = {};
+          errorsTemp.forEach((error, index) => {
+            newErrors[`${error.field}`] = error.message;
+          });
+          
+          console.log(newErrors);
+          errors.value = newErrors;
+      }
+      console.log(errors);
+    }
+  };
+
+  const updatePatient = async (id) => {
+    try {
+      await axios.put(`users/${id}`, patient.value);
+      await router.push({ name: "PatientList" });
+    } catch (error) {
       if (error.response.status === 422) {
         errors.value = error.response.data.errors;
+        // errors.value = error.response.data.status;
       }
       console.log(error);
     }
   };
 
-    const updatePatient = async (id) => {
-    try {
-        await axios.put(`patients/${id}`, patient.value);
-        await router.push({ name: "PatientList" });
-    } catch (error) {
-        if (error.response.status === 422) {
-            errors.value = error.response.data.errors;
-        }
-        console.log(error);
+  const deletePatient = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this patient?")) {
+      return;
     }
-    };
-
-
-    const deletePatient = async (id) => {
-        if (!window.confirm("Are you sure you want to delete this patient?")) {
-            return;
-        }
-        await axios.delete(`patients/${id}`);
-        await getPatients();
-
-    };
+    await axios.delete(`users/${id}`);
+    await getPatients();
+  };
 
   return {
     patients,
@@ -70,6 +81,5 @@ export default function usePatients() {
     storePatient,
     updatePatient,
     deletePatient,
-
-   };
+  };
 }

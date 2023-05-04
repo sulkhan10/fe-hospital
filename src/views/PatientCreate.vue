@@ -102,11 +102,10 @@ const form = reactive({
                     <div v-if="errors.nik">
                       <ul>
                         <li
-                          v-for="(item, index) in errors.nik"
-                          :key="index"
+                         
                           class="text-red-600"
                         >
-                          {{ item }}
+                          {{ errors.nik }}
                         </li>
                       </ul>
                     </div>
@@ -129,11 +128,10 @@ const form = reactive({
                     <div v-if="errors.name">
                       <ul>
                         <li
-                          v-for="(item, index) in errors.name"
-                          :key="index"
+                         
                           class="text-red-600"
                         >
-                          {{ item }}
+                          {{ errors.name }}
                         </li>
                       </ul>
                     </div>
@@ -158,11 +156,10 @@ const form = reactive({
                     <div v-if="errors.sex">
                       <ul>
                         <li
-                          v-for="(item, index) in errors.sex"
-                          :key="index"
+                       
                           class="text-red-600"
                         >
-                          {{ item }}
+                          {{ errors.sex }}
                         </li>
                       </ul>
                     </div>
@@ -185,11 +182,10 @@ const form = reactive({
                     <div v-if="errors.religion">
                       <ul>
                         <li
-                          v-for="(item, index) in errors.religion"
-                          :key="index"
+                         
                           class="text-red-600"
                         >
-                          {{ item }}
+                          {{ errors.religion}}
                         </li>
                       </ul>
                     </div>
@@ -212,11 +208,9 @@ const form = reactive({
                     <div v-if="errors.phone">
                       <ul>
                         <li
-                          v-for="(item, index) in errors.phone"
-                          :key="index"
                           class="text-red-600"
                         >
-                          {{ item }}
+                          {{ errors.phone }}
                         </li>
                       </ul>
                     </div>
@@ -239,11 +233,10 @@ const form = reactive({
                     <div v-if="errors.address">
                       <ul>
                         <li
-                          v-for="(item, index) in errors.address"
-                          :key="index"
+                        
                           class="text-red-600"
                         >
-                          {{ item }}
+                          {{ errors.address }}
                         </li>
                       </ul>
                     </div>
